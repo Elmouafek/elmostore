@@ -1,0 +1,98 @@
+body {
+  margin: 0;
+  font-family: "Tahoma", sans-serif;
+  line-height: 1.6;
+  background: #f9f9f9;
+  color: #333;
+}
+
+header.header {
+  background: #222;
+  color: #fff;
+  padding: 15px;
+  text-align: center;
+}
+header nav a {
+  color: #fff;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+/* ====== بارالاكس ====== */
+.parallax {
+  background: url("https://picsum.photos/id/1005/1200/800") no-repeat center;
+  background-attachment: fixed;
+  background-size: cover;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.7);
+  font-size: 2rem;
+}
+
+/* ====== سلايدر ====== */
+.slider {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+.slides {
+  display: flex;
+  width: 300%;
+  animation: slide 12s infinite;
+}
+.slides img {
+  width: 100%;
+}
+@keyframes slide {
+  0% {transform: translateX(0);}
+  33% {transform: translateX(-100%);}
+  66% {transform: translateX(-200%);}
+  100% {transform: translateX(0);}
+}
+
+/* ====== المنتجات ====== */
+.products {
+  padding: 50px 20px;
+  text-align: center;
+}
+.products .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+.card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+.card:hover {
+  transform: translateY(-5px);
+}
+.card img {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+/* ====== الفوتر ====== */
+.footer {
+  background: #222;
+  color: #fff;
+  text-align: center;
+  padding: 15px;
+}
+
+/* ====== انيميشن عند التمرير ====== */
+.animate {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+}
+.animate.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
