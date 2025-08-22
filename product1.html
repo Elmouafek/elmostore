@@ -1,354 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Product 1 – Order</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- ====== Minimal styles (move to your global.css later) ====== -->
+  <meta charset="UTF-8">
+  <title>Checkout</title>
   <style>
-    :root{
-      --bg:#0b0f19; --card:#121829; --muted:#9aa4b2; --text:#e6edf3; --accent:#3b82f6; --ok:#22c55e; --err:#ef4444;
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0;
+      display: flex; justify-content: center;
+      background: linear-gradient(to right, #f9f9f9, #ececec);
     }
-    *{box-sizing:border-box}
-    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial; background:var(--bg); color:var(--text);}
-    .container{max-width:1100px; margin:0 auto; padding:24px;}
-    .grid{display:grid; grid-template-columns:1.4fr .9fr; gap:24px;}
-    @media (max-width:900px){ .grid{grid-template-columns:1fr;}}
-    .card{background:var(--card); border:1px solid #1f2937; border-radius:16px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,.2)}
-    h1{font-size:28px; margin:0 0 6px}
-    .muted{color:var(--muted); font-size:14px}
-    label{display:block; font-size:14px; margin:14px 0 6px;}
-    input,select,textarea{
-      width:100%; padding:12px 14px; border:1px solid #29324a; background:#0f1526; color:var(--text);
-      border-radius:12px; outline:none;
+    .container {
+      display: flex; gap: 20px; margin: 40px;
+      width: 95%; max-width: 1100px;
     }
-    input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-    .row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-    .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 16px;
-      background:var(--accent); color:white; border:0; border-radius:12px; cursor:pointer; font-weight:600}
-    .btn.secondary{background:#374151}
-    .btn.ok{background:var(--ok)}
-    .btn.err{background:var(--err)}
-    .inline{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
-    .sticky{position:sticky; top:16px}
-    .price{font-size:28px; font-weight:700}
-    .kv{display:flex; justify-content:space-between; gap:12px; margin:6px 0}
-    .divider{height:1px; background:#1f2937; margin:14px 0}
-    .pill{display:inline-block; padding:2px 8px; border:1px solid #334155; border-radius:999px; color:#cbd5e1; font-size:12px}
-    .success{color:var(--ok)} .error{color:var(--err)}
-    .small{font-size:12px; color:#aab1bd}
-    .hidden{display:none}
+    .form-box, .summary-box {
+      background: white; padding: 25px;
+      border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      flex: 1;
+    }
+    h2 { margin-top: 0; color: #333; }
+    label { display: block; margin-top: 15px; font-weight: 600; }
+    input, select {
+      width: 100%; padding: 10px;
+      margin-top: 6px; border: 1px solid #ccc; border-radius: 8px;
+      font-size: 15px;
+    }
+    .summary-box {
+      max-width: 400px; position: sticky; top: 30px;
+    }
+    .summary-card {
+      background: #fafafa; border: 1px solid #eee;
+      padding: 15px; border-radius: 12px;
+    }
+    .btn-paypal {
+      background-color: #ffc439; color: #111;
+      border: none; border-radius: 10px;
+      padding: 14px 20px; font-size: 18px;
+      font-weight: bold; cursor: pointer;
+      margin-top: 25px; width: 100%;
+      transition: all 0.2s ease-in-out;
+    }
+    .btn-paypal:hover {
+      background-color: #ffb300;
+      transform: translateY(-2px);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Product 1</h1>
-    <p class="muted">High-quality product landing page with live calculator, customer preview and PayPal checkout.</p>
+    
+    <!-- Client Form -->
+    <div class="form-box">
+      <h2>Customer Information</h2>
+      <form id="orderForm" name="order-form" method="POST" data-netlify="true">
+        
+        <label>Full Name</label>
+        <input type="text" name="name" id="name" required>
 
-    <div class="grid">
-      <!-- ======================== LEFT: FORM ======================== -->
-      <div class="card">
-        <!-- Netlify will detect this form by name + data-netlify attribute -->
-        <form id="order-form" name="product1-form" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-          <!-- Required for Netlify Forms -->
-          <input type="hidden" name="form-name" value="product1-form" />
-          <input type="hidden" name="payment_status" value="pending" />
-          <input type="hidden" name="total_price" id="total_price" value="0" />
+        <label>Email Address</label>
+        <input type="email" name="email" id="email" required>
 
-          <div class="inline">
-            <span class="pill">Step 1</span><b>Enter your details</b>
-          </div>
+        <label>Shipping Address</label>
+        <input type="text" name="address" id="address" required>
 
-          <label>Full name
-            <input name="full_name" id="full_name" placeholder="John Doe" required />
-          </label>
+        <label>Product Color</label>
+        <select name="color" id="color" onchange="updateSummary()">
+          <option value="Black">Black</option>
+          <option value="White">White</option>
+          <option value="Blue">Blue</option>
+        </select>
 
-          <div class="row">
-            <div>
-              <label>Email
-                <input type="email" name="email" id="email" placeholder="john@example.com" required />
-              </label>
-            </div>
-            <div>
-              <label>Phone
-                <input type="tel" name="phone" id="phone" placeholder="+1 555 123 4567" />
-              </label>
-            </div>
-          </div>
+        <label>Product Size</label>
+        <select name="size" id="size" onchange="updateSummary()">
+          <option value="Small">Small</option>
+          <option value="Medium">Medium</option>
+          <option value="Large">Large</option>
+        </select>
 
-          <div class="row">
-            <div>
-              <label>Country
-                <input name="country" id="country" placeholder="United States" />
-              </label>
-            </div>
-            <div>
-              <label>State/Province
-                <input name="state" id="state" placeholder="California" />
-              </label>
-            </div>
-          </div>
+        <label>Quantity</label>
+        <input type="number" id="qty" name="quantity" value="1" min="1" onchange="updateSummary()" required>
 
-          <div class="row">
-            <div>
-              <label>City
-                <input name="city" id="city" placeholder="Los Angeles" />
-              </label>
-            </div>
-            <div>
-              <label>ZIP / Postal code
-                <input name="zip_code" id="zip_code" placeholder="90001" />
-              </label>
-            </div>
-          </div>
+        <label>Notes</label>
+        <input type="text" name="notes" id="notes">
 
-          <label>Address
-            <input name="address" id="address" placeholder="123 Market St, Apt 4B" />
-          </label>
+      </form>
+    </div>
 
-          <div class="divider"></div>
-
-          <div class="inline">
-            <span class="pill">Step 2</span><b>Choose options</b>
-          </div>
-
-          <input type="hidden" name="product" id="product" value="Product 1" />
-
-          <div class="row">
-            <div>
-              <label>Size
-                <select name="size" id="size">
-                  <option value="S">S</option>
-                  <option value="M" selected>M</option>
-                  <option value="L">L</option>
-                  <option value="XL">XL</option>
-                </select>
-              </label>
-            </div>
-            <div>
-              <label>Color
-                <select name="color" id="color">
-                  <option value="Black" selected>Black</option>
-                  <option value="White">White</option>
-                  <option value="Red">Red</option>
-                  <option value="Blue">Blue</option>
-                </select>
-              </label>
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label>Quantity
-                <input type="number" min="1" step="1" name="quantity" id="quantity" value="1" required />
-              </label>
-            </div>
-            <div>
-              <label>Notes (optional)
-                <input name="notes" id="notes" placeholder="Any special instructions..." />
-              </label>
-            </div>
-          </div>
-
-          <!-- Honeypot (anti-spam) -->
-          <p class="hidden">
-            <label>Don’t fill this out if you're human:
-              <input name="bot-field" />
-            </label>
-          </p>
-
-          <div class="divider"></div>
-
-          <div class="inline" style="justify-content:space-between">
-            <button type="button" id="save-only" class="btn secondary">Save details (no payment)</button>
-            <span id="status" class="small"></span>
-          </div>
-        </form>
+    <!-- Order Summary -->
+    <div class="summary-box">
+      <h2>Order Summary</h2>
+      <div class="summary-card" id="summaryCard">
+        <p id="sum-name">Name: -</p>
+        <p id="sum-email">Email: -</p>
+        <p id="sum-address">Address: -</p>
+        <hr>
+        <p><b>Product:</b> Custom Item</p>
+        <p id="sum-color">Color: Black</p>
+        <p id="sum-size">Size: Small</p>
+        <p id="sum-qty">Quantity: 1</p>
+        <p><b>Price per unit:</b> $10</p>
+        <p id="sum-total"><b>Total: $10</b></p>
       </div>
 
-      <!-- ======================== RIGHT: CALCULATOR / SUMMARY ======================== -->
-      <aside class="card sticky" id="summary-card">
-        <div class="inline">
-          <span class="pill">Step 3</span><b>Review & Pay</b>
-        </div>
-
-        <div class="divider"></div>
-
-        <div id="summary">
-          <div class="kv"><span>Product</span><b id="s_product">Product 1</b></div>
-          <div class="kv"><span>Unit price</span><b id="s_unit">$—</b></div>
-          <div class="kv"><span>Quantity</span><b id="s_qty">1</b></div>
-          <div class="kv"><span>Size</span><b id="s_size">M</b></div>
-          <div class="kv"><span>Color</span><b id="s_color">Black</b></div>
-
-          <div class="divider"></div>
-
-          <div class="kv"><span>Customer</span><b id="s_name">—</b></div>
-          <div class="kv"><span>Email</span><b id="s_email">—</b></div>
-          <div class="kv"><span>Phone</span><b id="s_phone">—</b></div>
-
-          <div class="kv small">
-            <span>Address</span>
-            <b id="s_address">—</b>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="kv"><span>Total</span><span class="price" id="s_total">$0.00</span></div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- PayPal buttons -->
-        <div id="paypal-button-container"></div>
-        <p class="small">PayPal shows a “Card” option in many regions. If you don’t see it, your PayPal account/region may not support card processing yet.</p>
-      </aside>
+      <!-- Single Button -->
+      <button class="btn-paypal" onclick="submitAndPay()">Submit & Pay with PayPal</button>
     </div>
   </div>
 
-  <!-- ====== PayPal SDK (replace YOUR_PAYPAL_CLIENT_ID and currency if needed) ====== -->
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
-
-  <!-- ====== Minimal JS (move to your global.js later) ====== -->
   <script>
-    // ====== CONFIG (edit these) ======
-    const PRODUCT_NAME = 'Product 1';
-    const CURRENCY = 'USD';
-    const UNIT_PRICE = 19.99; // base unit price
-    const SIZE_EXTRA = { S: 0, M: 0, L: 3, XL: 5 }; // size-based extra
-    // =================================
+    const price = 10;
 
-    // Shortcuts
-    const $ = (sel)=>document.querySelector(sel);
-    const form = $('#order-form');
+    function updateSummary() {
+      let qty = document.getElementById("qty").value;
+      let color = document.getElementById("color").value;
+      let size = document.getElementById("size").value;
+      let total = price * qty;
 
-    // Set product & unit UI
-    $('#s_product').textContent = PRODUCT_NAME;
-    $('#s_unit').textContent = money(UNIT_PRICE);
+      document.getElementById("sum-color").innerText = "Color: " + color;
+      document.getElementById("sum-size").innerText = "Size: " + size;
+      document.getElementById("sum-qty").innerText = "Quantity: " + qty;
+      document.getElementById("sum-total").innerHTML = "<b>Total: $" + total + "</b>";
 
-    // Live summary binding
-    const fields = ['full_name','email','phone','country','state','city','address','zip_code','size','color','quantity'];
-    fields.forEach(name=>{
-      form[name]?.addEventListener('input', update);
-      form[name]?.addEventListener('change', update);
-    });
-    update(); // initial render
-
-    function computeTotal(){
-      const qty = clampInt(form.quantity?.value, 1);
-      const size = (form.size?.value || 'M');
-      const total = (UNIT_PRICE + (SIZE_EXTRA[size]||0)) * qty;
-      return round2(total);
+      // update personal info in summary
+      document.getElementById("sum-name").innerText = "Name: " + (document.getElementById("name").value || "-");
+      document.getElementById("sum-email").innerText = "Email: " + (document.getElementById("email").value || "-");
+      document.getElementById("sum-address").innerText = "Address: " + (document.getElementById("address").value || "-");
     }
 
-    function update(){
-      // price
-      const qty = clampInt(form.quantity?.value, 1);
-      const size = form.size?.value || 'M';
-      const color = form.color?.value || 'Black';
-      const total = computeTotal();
+    async function submitAndPay() {
+      let form = document.getElementById("orderForm");
+      let formData = new FormData(form);
 
-      // fill hidden total
-      $('#total_price').value = total;
-
-      // summary UI
-      $('#s_qty').textContent = qty;
-      $('#s_size').textContent = size;
-      $('#s_color').textContent = color;
-      $('#s_total').textContent = money(total);
-
-      // customer preview
-      const name = form.full_name?.value || '—';
-      const email = form.email?.value || '—';
-      const phone = form.phone?.value || '—';
-      const a = form.address?.value || '';
-      const city = form.city?.value || '';
-      const st = form.state?.value || '';
-      const zip = form.zip_code?.value || '';
-      const country = form.country?.value || '';
-
-      $('#s_name').textContent = name;
-      $('#s_email').textContent = email;
-      $('#s_phone').textContent = phone;
-      $('#s_address').textContent = [a, city, st, zip, country].filter(Boolean).join(', ');
-    }
-
-    function clampInt(v, min=1){ v = parseInt(v||min,10); return isNaN(v)||v<min ? min : v; }
-    function round2(n){ return Math.round((n + Number.EPSILON) * 100) / 100; }
-    function money(n){ return (CURRENCY === 'USD' ? '$' : '') + n.toFixed(2) + (CURRENCY !== 'USD' ? ' ' + CURRENCY : ''); }
-
-    // ========= Netlify Forms: programmatic submit =========
-    function encode(data){ return new URLSearchParams(data).toString(); }
-    async function submitToNetlify(extra = {}){
-      const data = Object.fromEntries(new FormData(form).entries());
-      data['form-name'] = form.getAttribute('name'); // required
-      Object.assign(data, extra);
-      // Post to current site root so Netlify captures it
-      const res = await fetch('/', {
-        method:'POST',
-        headers:{ 'Content-Type':'application/x-www-form-urlencoded' },
-        body: encode(data)
+      // Send data to Netlify
+      await fetch("/", {
+        method: "POST",
+        body: formData
       });
-      return res.ok;
+
+      // Redirect to PayPal.me with total amount
+      let qty = document.getElementById("qty").value;
+      let total = price * qty;
+      window.open("https://paypal.me/EElkali/" + total, "_blank");
     }
 
-    // Save-only (no payment) button: stores pending lead
-    $('#save-only').addEventListener('click', async ()=>{
-      const status = $('#status');
-      if(!form.reportValidity()){ status.textContent = 'Please fill required fields.'; return; }
-      status.textContent = 'Saving...';
-      try{
-        const ok = await submitToNetlify({ payment_status:'pending', product: PRODUCT_NAME, total_price: computeTotal() });
-        status.textContent = ok ? 'Saved ✔ Check Netlify → Forms' : 'Failed to save.';
-        if(ok) form.reset(), update();
-      }catch(e){ status.textContent = 'Network error.'; }
+    // keep updating summary live
+    document.querySelectorAll("input, select").forEach(el => {
+      el.addEventListener("input", updateSummary);
     });
 
-    // ========= PayPal Buttons =========
-    if (window.paypal) {
-      paypal.Buttons({
-        style: { layout: 'vertical' }, // simple clean layout
-        // Create order with computed total
-        createOrder: (data, actions) => {
-          if(!form.reportValidity()){
-            $('#status').textContent = 'Please fill required fields first.';
-            return;
-          }
-          const total = computeTotal().toFixed(2);
-          return actions.order.create({
-            purchase_units: [{
-              description: PRODUCT_NAME,
-              amount: { value: total, currency_code: CURRENCY }
-            }]
-          });
-        },
-        onApprove: (data, actions) => {
-          return actions.order.capture().then(async (details) => {
-            // After successful payment: save to Netlify Forms as "paid"
-            $('#status').textContent = 'Payment successful. Saving order...';
-            try{
-              const ok = await submitToNetlify({
-                payment_status: 'paid',
-                paypal_order_id: details.id,
-                product: PRODUCT_NAME,
-                total_price: computeTotal()
-              });
-              $('#status').textContent = ok ? 'Order saved ✔ Thank you!' : 'Saved payment, but failed to store order.';
-              if(ok) form.reset(), update();
-            }catch(e){
-              $('#status').textContent = 'Payment captured, but saving failed.';
-            }
-          });
-        },
-        onError: (err) => {
-          console.error(err);
-          $('#status').textContent = 'Payment error. Please try again.';
-        }
-      }).render('#paypal-button-container');
-    } else {
-      $('#status').textContent = 'PayPal SDK failed to load.';
-    }
+    // initial summary
+    updateSummary();
   </script>
 </body>
 </html>
