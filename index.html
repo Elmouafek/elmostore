@@ -2,106 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Printful Test Order</title>
-  <style>
-    body {
-      background-color: hsla(210, 20%, 12%, 1);
-      color: hsla(0, 0%, 95%, 1);
-      font-family: Arial, sans-serif;
-      padding: 40px;
-    }
-    .container {
-      max-width: 500px;
-      margin: auto;
-      background: hsla(210, 20%, 20%, 1);
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px hsla(0, 0%, 0%, 0.4);
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 6px;
-      border: none;
-    }
-    button {
-      background: hsla(45, 90%, 55%, 1);
-      color: hsla(0, 0%, 10%, 1);
-      border: none;
-      padding: 12px;
-      margin-top: 15px;
-      width: 100%;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: hsla(45, 90%, 45%, 1);
-    }
-  </style>
+  <title>Netlify + Printful Test</title>
 </head>
-<body>
+<body style="background:hsla(210,20%,12%,1); color:white; text-align:center; padding:50px;">
 
-  <h1 style="text-align:center;">Order Backpack</h1>
-  <div class="container">
-    <form id="orderForm">
-      <input type="text" id="name" placeholder="Full Name" required>
-      <input type="text" id="address" placeholder="Address" required>
-      <input type="text" id="city" placeholder="City" required>
-      <input type="text" id="state" placeholder="State Code (e.g. CA)" required>
-      <input type="text" id="zip" placeholder="ZIP Code" required>
-      <select id="country" required>
-        <option value="US">United States</option>
-        <option value="CA">Canada</option>
-        <option value="GB">United Kingdom</option>
-      </select>
-      <button type="submit">Place Order</button>
-    </form>
-  </div>
+  <h1>Printful Token Test via Netlify Function</h1>
+  <button onclick="checkPrintful()">Check My Store</button>
+  <pre id="output"></pre>
 
   <script>
-    document.getElementById("orderForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-
-      const token = "F4Jg5XZqmm0JpabQlwvwmDhFnn7sDbYmTaEqXLHG"; // ?? ÖÚ ÇáÊæßä åäÇ
-      const variantId = "68c0b5a9ddfde9"; // ?? ÖÚ ÇáÜ variant_id åäÇ
-
-      const orderData = {
-        recipient: {
-          name: document.getElementById("name").value,
-          address1: document.getElementById("address").value,
-          city: document.getElementById("city").value,
-          state_code: document.getElementById("state").value,
-          country_code: document.getElementById("country").value,
-          zip: document.getElementById("zip").value
-        },
-        items: [
-          {
-            variant_id: variantId,
-            quantity: 1
-          }
-        ]
-      };
-
-      try {
-        const response = await fetch("https://api.printful.com/orders", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify(orderData)
-        });
-
-        const data = await response.json();
-        console.log(data);
-        alert("? Order created! Check console for details.");
-      } catch (error) {
-        console.error(error);
-        alert("? Error creating order.");
-      }
-    });
+    async function checkPrintful() {
+      const res = await fetch("/.netlify/functions/printful");
+      const data = await res.json();
+      document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
   </script>
 
 </body>
