@@ -2,21 +2,145 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Netlify + Printful Test</title>
-</head>
-<body style="background:hsla(210,20%,12%,1); color:white; text-align:center; padding:50px;">
-
-  <h1>Printful Token Test via Netlify Function</h1>
-  <button onclick="checkPrintful()">Check My Store</button>
-  <pre id="output"></pre>
-
-  <script>
-    async function checkPrintful() {
-      const res = await fetch("/.netlify/functions/printful");
-      const data = await res.json();
-      document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta />
+  <title>Elmo Store</title>
+  <style>
+  	body {
+	background-color: hsla(0,0%,90%,1);
+    color:dark;
+    font-family:'playfair display',srif;
+    transition: background-color 0.3s, color 0.3s;  
+	
+	     }
+	
+	/*@media (prefers-color-scheme: dark){
+        	body {
+            background-color:hsla(215,45%,10%,1);
+            color:hsla(210,20%,95%,1); 
+        	     }       
+	                                   }*/
+/*    body {      font-family: Arial, sans-serif;      background-color: #0a0f1c;     background:hsla(210,60%,12%,1);	  color: #ffffff;      margin: 0;      padding: 0;      transition: background-color 0.3s ease, color 0.3s ease;    }
+    body.gold {      background-color: hsla(210,10%,50%,1);      color: #000000;}    
+	
+ */
+    
+  /*  .toggle-btn {      background: none;      border: 2px solid currentColor;      color: inherit;padding: 8px 16px;cursor: pointer;font-size: 1rem; border-radius: 6px; margin-top: 10px;
     }
-  </script>
+	.toggle-btn:hover {      transform: translateY(-5px);}
+*/
+    .products {
+	 /* background-color:hsla(45,100%,0%,0);*/
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 100px;
+    }
+    .product {
+	  /*background:hsla(210,60%,100%,0);*/
+      border-radius: 12px;
+	  padding: 0px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .product:hover {
+      transform: translateY(-5px);
+      background-color:hsla(100,80%,50%,1);
+	  
+	  }
+    .product img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+	
+    /*.product h3 {
+      margin: 10px 0 5px;
+    }
+    .product p {
+      margin: 0;
+      font-weight: bold;
+    }*/
+	header {
+	background-color:hsla(210,100%,10%,1);
+	  color:hsla(210,10%,90%,1);
+      text-align: center;
+      padding: 50px;
+	  border-radius:10px;
+	  text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+	 }
+	footer {
+      background-color:hsla(210,100%,10%,1);
+	  color:hsla(210,10%,90%,1);
+      text-align: center;
+      padding: 100px;
+	  border-radius:10px;
+    }
+  </style>
+</head>
+<body>
+  <header >
+    Elmo Store
+    <br>
+   <!-- <button class="toggle-btn" onclick="document.body.classList.toggle('gold')">  https://files.cdn.printful.com/files/df9/df9c01c36443c7d5cb01f17fcfb6bce4_preview.png
+      Toggle Theme
+    </button> -->
+  </header>
 
+  <section class="products">
+    <div class="product">
+      <img  src="https://files.cdn.printful.com/files/df9/df9c01c36443c7d5cb01f17fcfb6bce4_preview.png"  alt="Product 3">
+      <h3>Classic Mug</h3>
+      <p>$9.99</p>
+    </div>
+    <div class="product">
+      <img src="https://printful.s3-accelerate.amazonaws.com/files/c9e/c9ebc27fa3e1673b91bf41969067842d?response-content-disposition=inline%3B%20filename%3D%22under-armour-backpack-castlerock-front-68c0b5a74512c.png%22&response-content-type=image%2Fpng&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA262TUYH3FYGDM3X4%2F20250911%2Fus-west-1%2Fs3%2Faws4_request&X-Amz-Date=20250911T223520Z&X-Amz-SignedHeaders=host&X-Amz-Expires=86400&X-Amz-Signature=7b79ef070b755096a57db9d57b2685407549e64f3605be91139937aac867a334" alt="Phone Case">
+      <h3>Phone Case</h3>
+      <p>$14.99</p>
+    </div>
+    <div class="product">
+      <img src="https://files.cdn.printful.com/upload/product-templates/7f/7f70217923004051458a30e8fadcda08_t" alt="Pillow">
+      <h3>Soft Pillow</h3>
+      <p>$19.99</p>
+    </div>
+    <div class="product">
+      <img src="https://printful.s3-accelerate.amazonaws.com/files/f1c/f1cd573719bae649447504189795d05f?response-content-disposition=inline%3B%20filename%3D%22unisex-pullover-hoodie-black-back-68969e3470b55.png%22&response-content-type=image%2Fpng&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA262TUYH3FYGDM3X4%2F20250911%2Fus-west-1%2Fs3%2Faws4_request&X-Amz-Date=20250911T223940Z&X-Amz-SignedHeaders=host&X-Amz-Expires=86400&X-Amz-Signature=bb72643278e3d168b5a66a7f84a28dd259235e3d18195017a44ebd6cc9237d11" alt="Wall Clock">
+      <h3>Wall Clock</h3>
+      <p>$24.99</p>
+    </div>
+
+    <div class="product">
+      <img src="https://via.placeholder.com/300x300.png?text=Mug" alt="Mug">
+      <h3>Classic Mug</h3>
+      <p>$9.99</p>
+    </div>
+    <div class="product">
+      <img src="https://files.cdn.printful.com/upload/product-templates/7f/7f70217923004051458a30e8fadcda08_t" alt="Phone Case">
+      <h3>Phone Case</h3>
+      <p>$14.99</p>
+    </div>
+    <div class="product">
+      <img src="https://via.placeholder.com/300x300.png?text=Pillow" alt="Pillow">
+      <h3>Soft Pillow</h3>
+      <p>$19.99</p>
+    </div>
+    <div class="product">
+      <img src="https://via.placeholder.com/300x300.png?text=Wall+Clock" alt="Wall Clock">
+      <h3>Wall Clock</h3>
+      <p>$24.99</p>
+    </div>
+  </section>
+  
+    <!-- ====== Footer ====== -->
+  <footer class="footer">
+  <p>
+  <a href="privacy.html">Privacy Policy</a>
+  <a href="terms.html">Terms of Service</a>
+  
+  </p>
+    <p>© 2025 All Rights Reserved - My Store</p>
+  </footer>
 </body>
 </html>
